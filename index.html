@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fish Fry Friday — Southeast Louisiana</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --red:    #CFB53B;
+      --black:  #0c0c0c;
+      --offblk: #141414;
+      --dim:    #222222;
+      --mid:    #3a3a3a;
+      --muted:  #777777;
+      --light:  #aaaaaa;
+      --white:  #f4f2ee;
+      --sw: 340px;
+    }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: var(--black);
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────── */
+    header {
+      flex-shrink: 0;
+      height: 52px;
+      background: var(--black);
+      border-bottom: 2px solid var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px 0 24px;
+      z-index: 900;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand h1 {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    /* ─── LAYOUT ──────────────────────────────────────── */
+    .layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ─── SIDEBAR ─────────────────────────────────────── */
+    .sidebar {
+      width: var(--sw);
+      flex-shrink: 0;
+      background: var(--offblk);
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--dim);
+      overflow: hidden;
+    }
+
+    .sidebar-top {
+      flex-shrink: 0;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--dim);
+    }
+
+    .count-line {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 4px;
+    }
+
+    .sidebar-top h2 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--light);
+    }
+
+    .search-wrap {
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--dim);
+    }
+
+    /* Filter type tabs */
+    .filter-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--dim);
+    }
+    .filter-tab {
+      flex: 1;
+      padding: 7px 4px 6px;
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-align: center;
+      color: #444;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: inherit;
+      border-right: 1px solid var(--dim);
+      transition: color 0.12s, background 0.12s;
+    }
+    .filter-tab:last-child { border-right: none; }
+    .filter-tab:hover { color: var(--light); background: #1a1a1a; }
+    .filter-tab.active {
+      color: var(--red);
+      background: #1a1a1a;
+      border-bottom: 2px solid var(--red);
+      margin-bottom: -1px;
+    }
+
+    /* Search input */
+    .search-wrap input {
+      width: 100%;
+      background: var(--dim);
+      border: none;
+      border-bottom: 1px solid #1a1a1a;
+      color: var(--white);
+      padding: 8px 20px;
+      font-size: 11px;
+      font-family: inherit;
+      letter-spacing: 0.04em;
+      outline: none;
+      display: block;
+      transition: background 0.15s;
+    }
+    .search-wrap input:focus { background: #2a2a2a; }
+    .search-wrap input::placeholder { color: #444; }
+
+    .sidebar-scroll {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .sidebar-scroll::-webkit-scrollbar { width: 2px; }
+    .sidebar-scroll::-webkit-scrollbar-track { background: var(--offblk); }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: var(--mid); }
+
+    /* Group header */
+    .group-label {
+      padding: 9px 20px 7px;
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      background: var(--black);
+      border-top: 1px solid var(--dim);
+      border-bottom: 1px solid #1a1a1a;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    /* Location row */
+    .loc-item {
+      padding: 13px 20px 11px;
+      border-bottom: 1px solid #191919;
+      cursor: pointer;
+      transition: background 0.1s;
+      border-left: 3px solid transparent;
+    }
+    .loc-item:hover { background: #1c1c1c; }
+    .loc-item.active {
+      background: #1e1e1e;
+      border-left-color: var(--red);
+      padding-left: 17px;
+    }
+    .loc-item.hidden { display: none; }
+
+    .loc-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 3px;
+      letter-spacing: 0.01em;
+      line-height: 1.3;
+    }
+    .loc-address {
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-bottom: 5px;
+      letter-spacing: 0.02em;
+    }
+    .loc-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+    .tag {
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 5px;
+      border-radius: 1px;
+      background: #252525;
+      color: #666;
+    }
+    .tag.dates { color: #888; }
+    .tag.price { color: #aaa; background: #2a2a2a; }
+
+    /* ─── SIDEBAR FOOTER ──────────────────────────────── */
+    .sidebar-footer {
+      flex-shrink: 0;
+      border-top: 1px solid var(--dim);
+      padding: 14px 20px;
+      background: var(--black);
+    }
+
+    .add-listing {
+      font-size: 10px;
+      color: #555;
+      line-height: 1.65;
+      letter-spacing: 0.02em;
+    }
+    .add-listing strong {
+      display: block;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 3px;
+    }
+    .add-listing a {
+      color: var(--light);
+      text-decoration: none;
+      border-bottom: 1px solid #333;
+    }
+    .add-listing a:hover { border-color: var(--light); }
+
+    .attrib {
+      margin-top: 10px;
+      font-size: 9px;
+      color: #3d3d3d;
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+    }
+    .attrib a { color: #4d4d4d; text-decoration: none; }
+    .attrib a:hover { color: #777; }
+
+    /* ─── MAP ─────────────────────────────────────────── */
+    #map {
+      flex: 1;
+      background: #e4e0d8;
+    }
+
+    /* ─── LEAFLET POPUP ───────────────────────────────── */
+    .leaflet-popup-content-wrapper {
+      border-radius: 0;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+      padding: 0;
+    }
+    .leaflet-popup-content { margin: 0; }
+    .leaflet-popup-tip { background: #fff; }
+
+    .popup {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      width: 270px;
+    }
+    .popup-head {
+      background: var(--black);
+      padding: 12px 14px 10px;
+    }
+    .popup-group {
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #CFB53B;
+      margin-bottom: 3px;
+    }
+    .popup-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 0.02em;
+      line-height: 1.25;
+    }
+    .popup-body {
+      background: #fff;
+      padding: 10px 14px 12px;
+    }
+    .popup-addr {
+      font-size: 11px;
+      color: #555;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    .popup-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 4px;
+      font-size: 11px;
+      color: #222;
+      align-items: baseline;
+    }
+    .popup-lbl {
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #9a7d1a;
+      min-width: 36px;
+      flex-shrink: 0;
+    }
+    .popup-notes {
+      margin-top: 7px;
+      font-size: 10px;
+      color: #777;
+      font-style: italic;
+      line-height: 1.5;
+      border-top: 1px solid #eee;
+      padding-top: 6px;
+    }
+
+    /* ─── GROUP HIDDEN STATE ──────────────────────────── */
+    .group-block.all-hidden { display: none; }
+    .no-results {
+      padding: 20px;
+      font-size: 11px;
+      color: #555;
+      letter-spacing: 0.06em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    /* ─── BRAND FLEUR ─────────────────────────────────── */
+    .brand-fleur {
+      font-size: 20px;
+      color: var(--red);
+      line-height: 1;
+      margin-right: 1px;
+    }
+
+    /* ─── HEADER RIGHT ────────────────────────────────── */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .header-meta {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ─── LOCATE BUTTON ───────────────────────────────── */
+    .locate-btn {
+      background: none;
+      border: 1px solid #333;
+      color: #555;
+      padding: 5px 11px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-family: inherit;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .locate-btn:hover { border-color: var(--red); color: var(--red); }
+    .locate-btn.locating { border-color: var(--red); color: var(--red); }
+    .locate-btn.located  { border-color: #4a90e2; color: #4a90e2; }
+
+    /* ─── NEAREST CARD ────────────────────────────────── */
+    .nearest-wrap {
+      flex-shrink: 0;
+      border-bottom: 2px solid var(--red);
+      background: #111;
+      display: none;
+    }
+    .nearest-wrap.visible { display: block; }
+    .nearest-section-label {
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      padding: 9px 20px 5px;
+    }
+    .nearest-card {
+      padding: 10px 20px 14px;
+      cursor: pointer;
+      border-left: 3px solid var(--red);
+      transition: background 0.1s;
+    }
+    .nearest-card:hover { background: #1a1a1a; }
+    .nearest-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 2px;
+      line-height: 1.3;
+    }
+    .nearest-addr {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+    .nearest-meta { display: flex; gap: 10px; align-items: center; }
+    .nearest-dist {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+    .nearest-dir {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid #333;
+      transition: color 0.12s, border-color 0.12s;
+    }
+    .nearest-dir:hover { color: var(--white); border-color: var(--white); }
+
+    /* ─── USER LOCATION DOT ───────────────────────────── */
+    .user-dot {
+      width: 14px;
+      height: 14px;
+      background: #4a90e2;
+      border: 2.5px solid #fff;
+      border-radius: 50%;
+      animation: user-pulse 2s ease-out infinite;
+    }
+    @keyframes user-pulse {
+      0%   { box-shadow: 0 0 0 0   rgba(74,144,226,0.55); }
+      70%  { box-shadow: 0 0 0 10px rgba(74,144,226,0); }
+      100% { box-shadow: 0 0 0 0   rgba(74,144,226,0); }
+    }
+
+    /* ─── POPUP DIRECTIONS LINK ───────────────────────── */
+    .popup-dir {
+      display: block;
+      margin-top: 8px;
+      padding-top: 7px;
+      border-top: 1px solid #eee;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #9a7d1a;
+      text-decoration: none;
+      transition: color 0.12s;
+    }
+    .popup-dir:hover { color: #5c4a0a; }
+
+    /* ─── LOCATION BANNER ─────────────────────────────── */
+    .location-banner {
+      display: none;
+      flex-shrink: 0;
+      background: #0f0f0f;
+      border-bottom: 2px solid var(--red);
+      padding: 9px 24px;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .location-banner.visible { display: flex; }
+    .location-banner:hover { background: #161616; }
+    .banner-label {
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      flex-shrink: 0;
+    }
+    .banner-sep { color: #2a2a2a; font-size: 16px; flex-shrink: 0; }
+    .banner-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 0.02em;
+      flex-shrink: 0;
+    }
+    .banner-dist {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .banner-dir {
+      margin-left: auto;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      text-decoration: none;
+      flex-shrink: 0;
+      padding: 4px 8px;
+      border: 1px solid #2a2a2a;
+      transition: border-color 0.12s, color 0.12s;
+    }
+    .banner-dir:hover { border-color: var(--red); color: var(--white); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     FISH FRY DATA — XML
+     To add or edit a listing, email kevinmkolb@gmail.com
+════════════════════════════════════════════════════ -->
+<script id="data" type="application/xml">
+<fishfries year="2026" season="Lent">
+
+  <group name="Jefferson Parish">
+    <location>
+      <name>Archbishop Rummel HS Fishing Club</name>
+      <address>1901 Severn Ave.</address>
+      <city>Metairie</city>
+      <lat>30.0052</lat><lng>-90.1568</lng>
+      <dates>Fridays Feb. 27 – Mar. 17</dates>
+      <time>6 p.m. until sold out</time>
+      <price>TBA</price>
+      <notes>Drive-thru only. Fried fish and sides.</notes>
+    </location>
+    <location>
+      <name>Divine Mercy Parish</name>
+      <address>4337 Sal Lentini Pkwy.</address>
+      <city>Kenner</city>
+      <lat>30.0211</lat><lng>-90.2434</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>3–7 p.m.</time>
+      <price>$15</price>
+      <notes>Drive-thru. Cajun potatoes, vegetables, roll. Beverages $1.</notes>
+    </location>
+    <location>
+      <name>Mary, Help of Christians Parish</name>
+      <address>600 1st Ave.</address>
+      <city>Harvey</city>
+      <lat>29.9013</lat><lng>-90.0743</lng>
+      <dates>Feb. 20 – Mar. 27 (all Fridays)</dates>
+      <time>4–8 p.m.</time>
+      <price>Fish $12, Shrimp $14, Combo $13</price>
+      <notes>Fries, coleslaw, hush puppies. Dine-in or take-out.</notes>
+    </location>
+    <location>
+      <name>Our Lady of Divine Providence</name>
+      <address>8617 W. Metairie Ave.</address>
+      <city>Metairie</city>
+      <lat>30.0039</lat><lng>-90.2165</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>4–7 p.m.</time>
+      <price>Fish $10, Crawfish pie $12, Shrimp étouffée $8</price>
+      <notes></notes>
+    </location>
+    <location>
+      <name>Our Lady of Perpetual Help</name>
+      <address>1908 Short St.</address>
+      <city>Kenner</city>
+      <lat>30.0219</lat><lng>-90.2315</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>3–6 p.m.</time>
+      <price>$13</price>
+      <notes>Fried fish, potatoes, corn, roll. Drive-thru available.</notes>
+    </location>
+    <location>
+      <name>St. Agnes Men's Club</name>
+      <address>3400 Jefferson Hwy.</address>
+      <city>Metairie</city>
+      <lat>29.9674</lat><lng>-90.1477</lng>
+      <dates>Feb. 27; Mar. 13, 27</dates>
+      <time></time>
+      <price>$15</price>
+      <notes>Fish, shrimp, fries, coleslaw and iced tea. Family Bingo Mar. 27.</notes>
+    </location>
+    <location>
+      <name>St. Angela Merici</name>
+      <address>901 Beverly Garden Dr.</address>
+      <city>Metairie</city>
+      <lat>30.0026</lat><lng>-90.1534</lng>
+      <dates>Feb. 27; Mar. 13, 27</dates>
+      <time></time>
+      <price>Fish $10–12, Grilled $14, Shrimp $14</price>
+      <notes>Soup $5, pizza $3. Various sides.</notes>
+    </location>
+    <location>
+      <name>St. Ann Church &amp; Shrine</name>
+      <address>4940 Meadowdale St.</address>
+      <city>Metairie</city>
+      <lat>30.0050</lat><lng>-90.1834</lng>
+      <dates>Feb. 20; Mar. 6, 20</dates>
+      <time>5:30 p.m.</time>
+      <price>$12</price>
+      <notes>Fried fish, corn, potatoes, bread. Drive-thru only.</notes>
+    </location>
+    <location>
+      <name>St. Ann Men's Club</name>
+      <address>4940 Meadowdale St.</address>
+      <city>Metairie</city>
+      <lat>30.0051</lat><lng>-90.1835</lng>
+      <dates>Feb. 27; Mar. 13, 27</dates>
+      <time></time>
+      <price>Fish/Shrimp $12, Combo $15</price>
+      <notes>Mar. 27 drive-thru only.</notes>
+    </location>
+    <location>
+      <name>St. Benilde Church</name>
+      <address>1901 Division St.</address>
+      <city>Metairie</city>
+      <lat>29.9988</lat><lng>-90.1673</lng>
+      <dates>Feb. 20; Mar. 6, 20</dates>
+      <time></time>
+      <price>Fish $14, Shrimp $14, Combo $14, Thai shrimp taco $15</price>
+      <notes>Boiled potatoes, corn and bread with fried plates.</notes>
+    </location>
+    <location>
+      <name>St. Catherine of Siena – Knights of Columbus</name>
+      <address>105 Bonnabel Blvd.</address>
+      <city>Metairie</city>
+      <lat>30.0089</lat><lng>-90.1442</lng>
+      <dates>Mar. 13, 20</dates>
+      <time>5:30–7 p.m.</time>
+      <price>$18+</price>
+      <notes>Menu varies. Hush puppy or cheese pizza.</notes>
+    </location>
+    <location>
+      <name>St. Catherine of Siena – Men's Club</name>
+      <address>105 Bonnabel Blvd.</address>
+      <city>Metairie</city>
+      <lat>30.0090</lat><lng>-90.1443</lng>
+      <dates>Feb. 27; Mar. 6</dates>
+      <time>5:30–7 p.m.</time>
+      <price>$18</price>
+      <notes>Soft shell crab or combo platter.</notes>
+    </location>
+    <location>
+      <name>St. Clement of Rome</name>
+      <address>4317 Richland Ave.</address>
+      <city>Metairie</city>
+      <lat>30.0123</lat><lng>-90.1787</lng>
+      <dates>Feb. 27; Mar. 6</dates>
+      <time>5:30 p.m.</time>
+      <price>Catfish $14, Combo $15, Shrimp $16, Crawfish pasta $15</price>
+      <notes></notes>
+    </location>
+    <location>
+      <name>St. Cletus Parish</name>
+      <address>3600 Claire Ave.</address>
+      <city>Gretna</city>
+      <lat>29.9186</lat><lng>-90.0571</lng>
+      <dates>Feb. 18, 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time></time>
+      <price>Varies</price>
+      <notes>Oyster, shrimp and fish plates and po-boys with sides.</notes>
+    </location>
+    <location>
+      <name>St. Edward the Confessor</name>
+      <address>4921 W. Metairie Ave.</address>
+      <city>Metairie</city>
+      <lat>29.9947</lat><lng>-90.1909</lng>
+      <dates>Feb. 27; Mar. 13</dates>
+      <time>5:30–7 p.m.</time>
+      <price>Fish $14, Shrimp $14, Combo $15</price>
+      <notes>Hush puppies and boiled red Cajun potatoes.</notes>
+    </location>
+    <location>
+      <name>St. Francis Xavier</name>
+      <address>444 Metairie Rd.</address>
+      <city>Metairie</city>
+      <lat>29.9758</lat><lng>-90.1335</lng>
+      <dates>Feb. 27; Mar. 13</dates>
+      <time>6:30–8 p.m.</time>
+      <price>Adult $15, Child $10, Gumbo $10</price>
+      <notes>Fried fish, potatoes, coleslaw and bread.</notes>
+    </location>
+    <location>
+      <name>St. John Paul II Church</name>
+      <address>6851 River Rd.</address>
+      <city>Waggaman</city>
+      <lat>29.9322</lat><lng>-90.2254</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 27</dates>
+      <time>Lunch 11 a.m.–1 p.m. / Dinner 5–7 p.m.</time>
+      <price>$15</price>
+      <notes>Multiple options including Cajun boiled corn and potatoes.</notes>
+    </location>
+    <location>
+      <name>St. Joseph Church and Shrine</name>
+      <address>610 6th St.</address>
+      <city>Gretna</city>
+      <lat>29.9194</lat><lng>-90.0543</lng>
+      <dates>Feb. 27</dates>
+      <time>5–7 p.m.</time>
+      <price>$15</price>
+      <notes>Catfish with baked macaroni, salad and bread; shrimp and grits.</notes>
+    </location>
+    <location>
+      <name>St. Louis King of France</name>
+      <address>1609 Carrollton Ave.</address>
+      <city>Metairie</city>
+      <lat>29.9820</lat><lng>-90.1432</lng>
+      <dates>Feb. 27; Mar. 6</dates>
+      <time>4:30–7:30 p.m.</time>
+      <price>$15</price>
+      <notes>Choice of two sides: corn, French fries, or mac and cheese.</notes>
+    </location>
+    <location>
+      <name>St. Mary Magdalen Church</name>
+      <address>6425 W. Metairie Ave.</address>
+      <city>Metairie</city>
+      <lat>30.0020</lat><lng>-90.2070</lng>
+      <dates>Mar. 6, 27</dates>
+      <time></time>
+      <price>Varies</price>
+      <notes>Fried fish and/or shrimp dinners with potatoes, coleslaw and bread.</notes>
+    </location>
+    <location>
+      <name>St. Matthew the Apostle Parish</name>
+      <address>10021 Jefferson Hwy.</address>
+      <city>River Ridge</city>
+      <lat>29.9716</lat><lng>-90.2303</lng>
+      <dates>Feb. 20, 27; Mar. 6</dates>
+      <time>5–8 p.m.</time>
+      <price>$15</price>
+      <notes>Shrimp pasta, fish, and shrimp options. Pre-sale tickets.</notes>
+    </location>
+    <location>
+      <name>St. Philip Neri</name>
+      <address>6500 Kawanee Ave.</address>
+      <city>Metairie</city>
+      <lat>29.9993</lat><lng>-90.1988</lng>
+      <dates>Feb. 27; Mar. 13</dates>
+      <time>Drive-thru 5–7:30 p.m., Dine-in 5–8 p.m.</time>
+      <price>Adult $15, Child $7</price>
+      <notes>Real domestic catfish dinner plates. Early bird 4:30 p.m.</notes>
+    </location>
+    <location>
+      <name>Visitation of Our Lady</name>
+      <address>3500 Ames Blvd.</address>
+      <city>Marrero</city>
+      <lat>29.8924</lat><lng>-90.1087</lng>
+      <dates>Feb. 18; all Fridays of Lent</dates>
+      <time></time>
+      <price>Po-boys $11–13, Plates $12–17</price>
+      <notes>Specialty options including broiled fish topped with étouffée and rice.</notes>
+    </location>
+  </group>
+
+  <group name="Orleans Parish">
+    <location>
+      <name>All Saints</name>
+      <address>300 Ptolemy St.</address>
+      <city>New Orleans</city>
+      <lat>29.9420</lat><lng>-90.0310</lng>
+      <dates>Feb. 18; Fridays from Feb. 20</dates>
+      <time>10 a.m.</time>
+      <price>Varies</price>
+      <notes>Fried fish, mac and cheese, potato salad, vegetable, bread, dessert.</notes>
+    </location>
+    <location>
+      <name>Blessed Francis Seelos</name>
+      <address>3037 Dauphine St.</address>
+      <city>New Orleans</city>
+      <lat>29.9555</lat><lng>-90.0533</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>5–7 p.m.</time>
+      <price>$15</price>
+      <notes>Fried catfish, coleslaw, veggie, bread, dessert and drink.</notes>
+    </location>
+    <location>
+      <name>Blessed Trinity Catholic Church</name>
+      <address>3900 General Taylor St.</address>
+      <city>New Orleans</city>
+      <lat>29.9399</lat><lng>-90.1043</lng>
+      <dates>Feb. 20, 27; Mar. 13, 27</dates>
+      <time></time>
+      <price>$13</price>
+      <notes>Fish plate.</notes>
+    </location>
+    <location>
+      <name>Center of Jesus the Lord</name>
+      <address>1325 Louisiana Ave.</address>
+      <city>New Orleans</city>
+      <lat>29.9402</lat><lng>-90.0970</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>5–7:30 p.m.</time>
+      <price>$15</price>
+      <notes>Fried fish, blackened fish, or shrimp &amp; okra gumbo with rice. Mar. 6 lunch only.</notes>
+    </location>
+    <location>
+      <name>Holy Cross High School</name>
+      <address>5500 Paris Ave.</address>
+      <city>New Orleans</city>
+      <lat>30.0044</lat><lng>-89.9999</lng>
+      <dates>Feb. 27</dates>
+      <time>3:30–5:30 p.m.</time>
+      <price>$15</price>
+      <notes>Fried fish, mac and cheese, green beans, garden salad, bread. Cookies $2.</notes>
+    </location>
+    <location>
+      <name>Mater Dolorosa</name>
+      <address>1230 S. Carrollton Ave.</address>
+      <city>New Orleans</city>
+      <lat>29.9440</lat><lng>-90.1192</lng>
+      <dates>Feb. 27; Mar. 13, 27</dates>
+      <time>5–8 p.m.</time>
+      <price>$15</price>
+      <notes>Two fish filets, French fries, mac and cheese, coleslaw, garlic bread.</notes>
+    </location>
+    <location>
+      <name>Our Lady of the Holy Rosary</name>
+      <address>3368 Esplanade Ave.</address>
+      <city>New Orleans</city>
+      <lat>29.9810</lat><lng>-90.0752</lng>
+      <dates>Feb. 27; Mar. 6, 13</dates>
+      <time>5:30–7:30 p.m.</time>
+      <price>$12</price>
+      <notes>Fried catfish, fries, coleslaw and green beans.</notes>
+    </location>
+    <location>
+      <name>St. Francis of Assisi</name>
+      <address>631 State St.</address>
+      <city>New Orleans</city>
+      <lat>29.9341</lat><lng>-90.1139</lng>
+      <dates>Feb. 27; Mar. 13, 27</dates>
+      <time>6–8 p.m.</time>
+      <price>Adult $15, Child $11</price>
+      <notes>Fish, shrimp, combo options.</notes>
+    </location>
+    <location>
+      <name>St. Joseph Rebuild Center / Lantern Light</name>
+      <address>1803 Gravier St.</address>
+      <city>New Orleans</city>
+      <lat>29.9480</lat><lng>-90.0820</lng>
+      <dates>Feb. 20</dates>
+      <time>Noon–6 p.m.</time>
+      <price>Varies</price>
+      <notes>Fried or baked fish, coleslaw, vegetable, dessert and water.</notes>
+    </location>
+    <location>
+      <name>St. Josephine Bakhita</name>
+      <address>3501 N. Miro St.</address>
+      <city>New Orleans</city>
+      <lat>29.9894</lat><lng>-90.0690</lng>
+      <dates>Every Friday during Lent</dates>
+      <time>11 a.m.–6 p.m.</time>
+      <price>$15</price>
+      <notes>Pick-up or delivery for orders of 10+. Call (504) 945-3186.</notes>
+    </location>
+    <location>
+      <name>St. Maria Goretti</name>
+      <address>7300 Crowder Blvd.</address>
+      <city>New Orleans</city>
+      <lat>30.0280</lat><lng>-89.9580</lng>
+      <dates>Feb. 20; Mar. 6, 20, 27</dates>
+      <time>Noon–5 p.m.</time>
+      <price>$15</price>
+      <notes>Fried or baked fish, mac and cheese, potato salad, vegetable, roll, dessert.</notes>
+    </location>
+    <location>
+      <name>St. Martin de Porres</name>
+      <address>2212 Prentiss Ave.</address>
+      <city>New Orleans</city>
+      <lat>30.0010</lat><lng>-90.0585</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>10:30 a.m.–5:30 p.m.</time>
+      <price>$15</price>
+      <notes>Two pieces of fish (baked or fried), mac and cheese, vegetable, salad.</notes>
+    </location>
+    <location>
+      <name>St. Paul the Apostle</name>
+      <address>6828 Chef Menteur Hwy.</address>
+      <city>New Orleans</city>
+      <lat>30.0118</lat><lng>-89.9792</lng>
+      <dates>Feb. 20; Mar. 27</dates>
+      <time>11 a.m.–5 p.m.</time>
+      <price>$12</price>
+      <notes>Crispy fried fish, baked mac and cheese, potato salad, peas, dessert.</notes>
+    </location>
+    <location>
+      <name>St. Peter Claver Parish</name>
+      <address>1923 St. Philip St.</address>
+      <city>New Orleans</city>
+      <lat>29.9590</lat><lng>-90.0802</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>11 a.m.–4 p.m.</time>
+      <price>$15 (drinks $1)</price>
+      <notes>Fried fish, potato salad, mac and cheese and green beans. Parking lot pickup.</notes>
+    </location>
+    <location>
+      <name>Ursuline Academy</name>
+      <address>2635 State St.</address>
+      <city>New Orleans</city>
+      <lat>29.9326</lat><lng>-90.1165</lng>
+      <dates>Mar. 27</dates>
+      <time>5–8 p.m.</time>
+      <price>Varies</price>
+      <notes>Two fried fish fillets, green beans, mac and cheese and bread. Pre-order tickets go on sale Feb. 18. Beer/wine $5.</notes>
+    </location>
+  </group>
+
+  <group name="Northshore">
+    <location>
+      <name>Annunciation Church</name>
+      <address>517 Ave. B</address>
+      <city>Bogalusa</city>
+      <lat>30.7909</lat><lng>-89.8432</lng>
+      <dates>Feb. 27; Mar. 13, 27</dates>
+      <time>3:30–7 p.m.</time>
+      <price>Varies</price>
+      <notes>Pick-up under the pavilion behind the church.</notes>
+    </location>
+    <location>
+      <name>Holy Family Friends of St. Francis</name>
+      <address>1220 14th Ave.</address>
+      <city>Franklinton</city>
+      <lat>30.8488</lat><lng>-90.1538</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>4–7 p.m.</time>
+      <price>$12</price>
+      <notes>Fish, fries, mixed vegetables, coleslaw and brownie.</notes>
+    </location>
+    <location>
+      <name>Mary, Queen of Peace Church</name>
+      <address>1501 W. Causeway Approach</address>
+      <city>Mandeville</city>
+      <lat>30.3730</lat><lng>-90.0977</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>5–6:30 p.m.</time>
+      <price>Adult $12, Child $6, Coop Special $20</price>
+      <notes>Choice of fried or baked fish, fried shrimp with multiple sides.</notes>
+    </location>
+    <location>
+      <name>Most Holy Trinity</name>
+      <address>501 Holy Trinity Dr.</address>
+      <city>Covington</city>
+      <lat>30.4752</lat><lng>-90.0994</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>4–7 p.m.</time>
+      <price>Plates $15, Platters $20</price>
+      <notes>Fried fish, shrimp, crawfish pies, hush puppies.</notes>
+    </location>
+    <location>
+      <name>Our Lady of Lourdes</name>
+      <address>345 Westchester Pl.</address>
+      <city>Slidell</city>
+      <lat>30.2983</lat><lng>-89.7808</lng>
+      <dates>Feb. 27; Mar. 6, 13, 20, 27</dates>
+      <time>5–8 p.m.</time>
+      <price>$12–14</price>
+      <notes>Fried fish or shrimp, crab-boiled smashed potatoes, salad, roll. Dine-in/drive-thru.</notes>
+    </location>
+    <location>
+      <name>Our Lady of the Lake Church</name>
+      <address>312 Lafitte St.</address>
+      <city>Mandeville</city>
+      <lat>30.3560</lat><lng>-90.0794</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time></time>
+      <price>Adult $12, Child $7</price>
+      <notes>Two pieces fried fish or one whole baked filet with sides.</notes>
+    </location>
+    <location>
+      <name>Sacred Heart of Jesus</name>
+      <address>28088 Main St.</address>
+      <city>Lacombe</city>
+      <lat>30.3152</lat><lng>-89.9294</lng>
+      <dates>Feb. 20; Mar. 6</dates>
+      <time>4–6:30 p.m.</time>
+      <price>$12</price>
+      <notes>Fried fish, potato salad, green beans, mac and cheese, roll and dessert.</notes>
+    </location>
+    <location>
+      <name>St. Anselm Parish</name>
+      <address>Madisonville</address>
+      <city>Madisonville</city>
+      <lat>30.4020</lat><lng>-90.1636</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time></time>
+      <price>Adult fish $19, Adult shrimp $20, Seafood combo $23</price>
+      <notes>Gumbo $13, shrimp Caesar salad $17. Child plates available.</notes>
+    </location>
+    <location>
+      <name>St. Benedict Church</name>
+      <address>20370 Smith Rd.</address>
+      <city>Covington</city>
+      <lat>30.5273</lat><lng>-90.1115</lng>
+      <dates>Feb. 27; Mar. 13, 27</dates>
+      <time></time>
+      <price>$13</price>
+      <notes>Fish or shrimp dinner, tater tots, coleslaw and French bread.</notes>
+    </location>
+    <location>
+      <name>St. Genevieve Church</name>
+      <address>58025 St. Genevieve Ln.</address>
+      <city>Slidell</city>
+      <lat>30.3267</lat><lng>-89.8308</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>11 a.m.–6 p.m.</time>
+      <price>$10</price>
+      <notes>Fried fish, potato salad, green peas and roll.</notes>
+    </location>
+    <location>
+      <name>St. Jane de Chantal</name>
+      <address>72040 Maple St.</address>
+      <city>Abita Springs</city>
+      <lat>30.4696</lat><lng>-90.0330</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time></time>
+      <price>Plates $13, Gumbo $7</price>
+      <notes>Fried catfish, fried shrimp or combo plate with sides.</notes>
+    </location>
+    <location>
+      <name>St. John the Baptist</name>
+      <address>11345 St. John Church Rd.</address>
+      <city>Folsom</city>
+      <lat>30.6293</lat><lng>-90.1888</lng>
+      <dates>Every Friday in Lent (except Good Friday)</dates>
+      <time>4–7 p.m.</time>
+      <price>$12</price>
+      <notes>Fried catfish, baked cheese potatoes, coleslaw and hush puppies.</notes>
+    </location>
+    <location>
+      <name>St. John of the Cross</name>
+      <address>61030 Brier Lake Dr.</address>
+      <city>Lacombe</city>
+      <lat>30.3189</lat><lng>-89.9254</lng>
+      <dates>Feb. 27; Mar. 13, 27</dates>
+      <time>4:30–7 p.m.</time>
+      <price>$12</price>
+      <notes>Fried domestic catfish, wild caught gulf shrimp or combo with sides.</notes>
+    </location>
+    <location>
+      <name>St. Luke the Evangelist</name>
+      <address>910 Cross Gates Blvd.</address>
+      <city>Slidell</city>
+      <lat>30.2878</lat><lng>-89.7900</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>5–8 p.m.</time>
+      <price>$12</price>
+      <notes>Fried or baked fish with choice of two sides. Dine-in/carry-out/drive-thru.</notes>
+    </location>
+    <location>
+      <name>St. Peter</name>
+      <address>125 E. 19th Ave.</address>
+      <city>Covington</city>
+      <lat>30.4804</lat><lng>-90.0948</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>Dine-in 5:30–7 p.m., Drive-thru 5–7 p.m.</time>
+      <price>$13</price>
+      <notes>Catfish, shrimp, fries, bread and choice of potato salad or coleslaw.</notes>
+    </location>
+  </group>
+
+  <group name="Plaquemines Parish">
+    <location>
+      <name>Our Lady of Perpetual Help</name>
+      <address>8968 LA-23</address>
+      <city>Belle Chasse</city>
+      <lat>29.8527</lat><lng>-90.0019</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>5:30–8 p.m.</time>
+      <price>$15</price>
+      <notes>Fish dinner with fries, coleslaw and bread. Both fish and shrimp available.</notes>
+    </location>
+    <location>
+      <name>St. Patrick Church</name>
+      <address>28698 Hwy. 23</address>
+      <city>Port Sulphur</city>
+      <lat>29.4878</lat><lng>-89.6950</lng>
+      <dates>Fridays during Lent</dates>
+      <time>11 a.m.–1 p.m.</time>
+      <price>Varies</price>
+      <notes>Fish plates.</notes>
+    </location>
+  </group>
+
+  <group name="River Parishes">
+    <location>
+      <name>Ascension of Our Lord</name>
+      <address>809 Greenwood Dr.</address>
+      <city>LaPlace</city>
+      <lat>30.0720</lat><lng>-90.4746</lng>
+      <dates>Feb. 18, 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>10:30 a.m.–6 p.m.</time>
+      <price>Adult $13, Child $10</price>
+      <notes>2 large pieces of fish (fried or grilled), Cajun boiled potatoes and corn.</notes>
+    </location>
+    <location>
+      <name>Our Lady of Grace Church</name>
+      <address>772 LA-44</address>
+      <city>Reserve</city>
+      <lat>30.0568</lat><lng>-90.5566</lng>
+      <dates>Every Friday in Lent (except Good Friday)</dates>
+      <time>11 a.m.–1 p.m. and 5:30–7 p.m.</time>
+      <price>$15</price>
+      <notes>Fried fish, baked spaghetti, veggies, potato salad, bread and dessert.</notes>
+    </location>
+    <location>
+      <name>St. Anthony of Padua</name>
+      <address>234 Angus Dr.</address>
+      <city>Luling</city>
+      <lat>29.9291</lat><lng>-90.3699</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>5–7 p.m.</time>
+      <price>$15</price>
+      <notes>Catfish plate: fish, fries, hushpuppies, vegetable and bread OR Seafood Gumbo.</notes>
+    </location>
+    <location>
+      <name>St. Charles Borromeo Church</name>
+      <address>13396 River Rd.</address>
+      <city>Destrehan</city>
+      <lat>29.9555</lat><lng>-90.3850</lng>
+      <dates>Feb. 27; Mar. 13, 27</dates>
+      <time>4–7 p.m.</time>
+      <price>Advance $15, Door $20</price>
+      <notes>Fried fish, French fries, corn on the cob, green salad, bread and dessert. Drive-thru only.</notes>
+    </location>
+    <location>
+      <name>St. Joan of Arc</name>
+      <address>529 W. 5th St.</address>
+      <city>LaPlace</city>
+      <lat>30.0688</lat><lng>-90.4778</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time></time>
+      <price>Fish $14, Shrimp $16, Combo $16, Crawfish étouffée $17</price>
+      <notes>Multiple à la carte options including pasta salad and cheese sticks.</notes>
+    </location>
+    <location>
+      <name>St. Mark Church</name>
+      <address>10773 River Rd.</address>
+      <city>Ama</city>
+      <lat>29.9470</lat><lng>-90.3165</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>4:30 p.m.</time>
+      <price>Varies</price>
+      <notes>Fried shrimp, fried fish, shrimp stew, coleslaw and bread. Child plates available.</notes>
+    </location>
+    <location>
+      <name>Sacred Heart Church</name>
+      <address>375 Spruce St.</address>
+      <city>Norco</city>
+      <lat>29.9960</lat><lng>-90.3994</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time>4–7 p.m.</time>
+      <price>$15</price>
+      <notes></notes>
+    </location>
+  </group>
+
+  <group name="St. Bernard Parish">
+    <location>
+      <name>St. Bernard Church</name>
+      <address>2805 Bayou Rd.</address>
+      <city>St. Bernard</city>
+      <lat>29.8871</lat><lng>-89.8997</lng>
+      <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
+      <time></time>
+      <price>Fish/Shrimp $20, Stuffed crab $26, Seafood platter $28</price>
+      <notes>Multiple sides à la carte including gumbo, jambalaya, po-boys.</notes>
+    </location>
+  </group>
+
+</fishfries>
+</script>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE STRUCTURE
+════════════════════════════════════════════════════ -->
+<header>
+  <div class="brand">
+    <span class="brand-fleur">⚜</span>
+    <h1>Fish Fry Friday</h1>
+  </div>
+  <div class="header-right">
+    <span class="header-meta">Lent 2026 &nbsp;·&nbsp; Southeast Louisiana</span>
+    <button id="locate-btn" class="locate-btn">⊙ My Location</button>
+  </div>
+</header>
+
+<div id="location-banner" class="location-banner">
+  <span class="banner-label">⚜ Nearest Fish Fry</span>
+  <span class="banner-sep">—</span>
+  <strong id="banner-name" class="banner-name"></strong>
+  <span id="banner-dist" class="banner-dist"></span>
+  <a id="banner-dir" class="banner-dir" href="#" target="_blank" rel="noopener">Get Directions ›</a>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="count-line" id="count-line">63 Locations</div>
+      <h2>Southeast Louisiana Fish Fries</h2>
+    </div>
+    <div class="nearest-wrap" id="nearest-wrap">
+      <div class="nearest-section-label">⚜ Nearest to you</div>
+      <div id="nearest-card" class="nearest-card"></div>
+    </div>
+    <div class="search-wrap">
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-field="all">All</button>
+        <button class="filter-tab" data-field="name">Name</button>
+        <button class="filter-tab" data-field="city">City</button>
+        <button class="filter-tab" data-field="parish">Parish</button>
+      </div>
+      <input type="text" id="search" placeholder="Type to filter…" autocomplete="off" />
+    </div>
+    <div class="sidebar-scroll" id="sidebar-scroll">
+      <!-- built by JS -->
+    </div>
+    <div class="sidebar-footer">
+      <div class="add-listing">
+        <strong>Know a fish fry we missed?</strong>
+        Send name, address, dates &amp; times to
+        <a href="mailto:kevinmkolb@gmail.com">kevinmkolb@gmail.com</a>
+        to add or correct a listing.
+      </div>
+      <div class="attrib">
+        Source: <a href="https://www.wwltv.com/article/news/local/looking-for-a-fish-fry-this-lent-here-are-dozens-across-southeast-louisiana/289-bea7da43-3506-46d8-92aa-126953f0f422" target="_blank" rel="noopener">WWL-TV</a>
+        &amp; <a href="https://www.nolanow.com/2026/02/19/2026-fish-fry-guide-heres-where-you-can-find-lenten-fish-fry-fridays/" target="_blank" rel="noopener">NOLA Now</a>.
+        Dates, times &amp; prices subject to change — confirm with each venue.
+      </div>
+    </div>
+  </aside>
+
+  <div id="map"></div>
+</div>
+
+<script>
+(function () {
+  /* ── 1. Parse XML ─────────────────────────────────── */
+  const xmlText = document.getElementById('data').textContent.trim();
+  const parser  = new DOMParser();
+  const xmlDoc  = parser.parseFromString(xmlText, 'application/xml');
+  if (xmlDoc.querySelector('parsererror')) {
+    console.error('XML parse failed', xmlDoc.querySelector('parsererror').textContent);
+  }
+
+  /* ── 2. Init Map ──────────────────────────────────── */
+  const map = L.map('map', {
+    center: [30.05, -90.05],
+    zoom: 10,
+    zoomControl: false,
+  });
+
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+  L.tileLayer(
+    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
+        '&copy; <a href="https://carto.com/attributions">CARTO</a> · ' +
+        'Data: <a href="https://www.wwltv.com/article/news/local/looking-for-a-fish-fry-this-lent-here-are-dozens-across-southeast-louisiana/289-bea7da43-3506-46d8-92aa-126953f0f422">WWL-TV</a>',
+      maxZoom: 19,
+      subdomains: 'abcd',
+    }
+  ).addTo(map);
+
+  /* ── 3. Build data & UI ───────────────────────────── */
+  const sidebar = document.getElementById('sidebar-scroll');
+  const groups  = xmlDoc.querySelectorAll('group');
+  const all     = [];  // flat array of location objects
+
+  function text(el, tag) {
+    const node = el.querySelector(tag);
+    return node ? node.textContent.trim() : '';
+  }
+
+  groups.forEach(group => {
+    const groupName = group.getAttribute('name');
+    const locs      = group.querySelectorAll('location');
+
+    // Sidebar group block
+    const block = document.createElement('div');
+    block.className = 'group-block';
+
+    const label = document.createElement('div');
+    label.className = 'group-label';
+    label.textContent = groupName;
+    block.appendChild(label);
+
+    locs.forEach((loc, idx) => {
+      const d = {
+        name:    text(loc, 'name'),
+        address: text(loc, 'address'),
+        city:    text(loc, 'city'),
+        lat:     parseFloat(text(loc, 'lat')),
+        lng:     parseFloat(text(loc, 'lng')),
+        dates:   text(loc, 'dates'),
+        time:    text(loc, 'time'),
+        price:   text(loc, 'price'),
+        notes:   text(loc, 'notes'),
+        group:   groupName,
+        id:      all.length,
+      };
+      all.push(d);
+
+      /* — Sidebar item — */
+      const item = document.createElement('div');
+      item.className = 'loc-item';
+      item.dataset.id = d.id;
+      item.innerHTML =
+        `<div class="loc-name">${d.name}</div>` +
+        `<div class="loc-address">${d.address}, ${d.city}</div>` +
+        `<div class="loc-tags">` +
+          (d.dates ? `<span class="tag dates">${d.dates}</span>` : '') +
+          (d.price ? `<span class="tag price">${d.price}</span>` : '') +
+        `</div>`;
+      block.appendChild(item);
+      d.sidebarEl = item;
+
+      /* — Map marker — */
+      const marker = L.circleMarker([d.lat, d.lng], {
+        radius:      7,
+        fillColor:   '#CFB53B',
+        color:       '#ffffff',
+        weight:      1.5,
+        opacity:     1,
+        fillOpacity: 0.9,
+      });
+
+      const popupHtml =
+        `<div class="popup">` +
+          `<div class="popup-head">` +
+            `<div class="popup-group">${d.group}</div>` +
+            `<div class="popup-name">${d.name}</div>` +
+          `</div>` +
+          `<div class="popup-body">` +
+            `<div class="popup-addr">${d.address}, ${d.city}</div>` +
+            (d.dates ? `<div class="popup-row"><span class="popup-lbl">Dates</span>${d.dates}</div>` : '') +
+            (d.time  ? `<div class="popup-row"><span class="popup-lbl">Time</span>${d.time}</div>`  : '') +
+            (d.price ? `<div class="popup-row"><span class="popup-lbl">Price</span>${d.price}</div>` : '') +
+            (d.notes ? `<div class="popup-notes">${d.notes}</div>` : '') +
+            `<a class="popup-dir" href="https://www.google.com/maps/dir/?api=1&destination=${d.lat},${d.lng}&travelmode=driving" target="_blank" rel="noopener">⊙ Get Directions</a>` +
+          `</div>` +
+        `</div>`;
+
+      marker.bindPopup(popupHtml, { maxWidth: 290, minWidth: 270 });
+
+      marker.on('click', () => {
+        setActive(d.id);
+        scrollToItem(d.sidebarEl);
+      });
+
+      marker.addTo(map);
+      d.marker = marker;
+
+      /* — Sidebar click — */
+      item.addEventListener('click', () => {
+        setActive(d.id);
+        map.flyTo([d.lat, d.lng], 15, { duration: 0.6 });
+        d.marker.openPopup();
+      });
+    });
+
+    sidebar.appendChild(block);
+    group._block = block;
+  });
+
+  /* ── 4. Active state ──────────────────────────────── */
+  let activeId = null;
+  function setActive(id) {
+    if (activeId !== null && all[activeId]) {
+      all[activeId].sidebarEl.classList.remove('active');
+      all[activeId].marker.setStyle({ fillColor: '#CFB53B', radius: 7 });
+    }
+    activeId = id;
+    if (id !== null) {
+      all[id].sidebarEl.classList.add('active');
+      all[id].marker.setStyle({ fillColor: '#e8d060', radius: 9 });
+    }
+  }
+
+  function scrollToItem(el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ── 5. Search / filter ───────────────────────────── */
+  const searchInput = document.getElementById('search');
+  const countLine   = document.getElementById('count-line');
+  const filterTabs  = document.querySelectorAll('.filter-tab');
+
+  let filterField = 'all';
+
+  const placeholders = {
+    all:    'Type to filter…',
+    name:   'Filter by parish / church / event name…',
+    city:   'Filter by city (e.g. Metairie)…',
+    parish: 'Filter by state parish (e.g. Jefferson)…',
+  };
+
+  filterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      filterTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      filterField = tab.dataset.field;
+      searchInput.placeholder = placeholders[filterField];
+      searchInput.focus();
+      applyFilter();
+    });
+  });
+
+  searchInput.addEventListener('input', applyFilter);
+
+  function applyFilter() {
+    const q = searchInput.value.trim().toLowerCase();
+    let visible = 0;
+
+    const groupBlocks = sidebar.querySelectorAll('.group-block');
+
+    groups.forEach((group, gi) => {
+      const block = groupBlocks[gi];
+      let groupVisible = 0;
+
+      block.querySelectorAll('.loc-item').forEach(item => {
+        const d = all[parseInt(item.dataset.id)];
+
+        let match;
+        if (!q) {
+          match = true;
+        } else if (filterField === 'name') {
+          match = d.name.toLowerCase().includes(q);
+        } else if (filterField === 'city') {
+          match = d.city.toLowerCase().includes(q);
+        } else if (filterField === 'parish') {
+          match = d.group.toLowerCase().includes(q);
+        } else {
+          // all
+          match = d.name.toLowerCase().includes(q) ||
+                  d.city.toLowerCase().includes(q) ||
+                  d.group.toLowerCase().includes(q) ||
+                  d.address.toLowerCase().includes(q);
+        }
+
+        item.classList.toggle('hidden', !match);
+        if (match) { groupVisible++; visible++; }
+
+        if (d.marker) {
+          d.marker.setStyle({
+            fillOpacity: (!q || match) ? 0.9  : 0.08,
+            opacity:     (!q || match) ? 1    : 0.15,
+          });
+        }
+      });
+
+      block.classList.toggle('all-hidden', groupVisible === 0);
+    });
+
+    countLine.textContent = q
+      ? `${visible} of ${all.length} locations`
+      : `${all.length} Locations`;
+  }
+
+  /* ── 6. Fit map to all markers ────────────────────── */
+  const latlngs = all.map(d => [d.lat, d.lng]);
+  if (latlngs.length) map.fitBounds(latlngs, { padding: [32, 32] });
+
+  /* ── 7. Geolocation & nearest fish fry ────────────── */
+  let userLat = null, userLng = null, userMarker = null, nearestLoc = null;
+
+  function haversine(lat1, lng1, lat2, lng2) {
+    const R    = 3958.8;
+    const toR  = x => x * Math.PI / 180;
+    const dLat = toR(lat2 - lat1);
+    const dLng = toR(lng2 - lng1);
+    const a    = Math.sin(dLat/2)**2 +
+                 Math.cos(toR(lat1)) * Math.cos(toR(lat2)) * Math.sin(dLng/2)**2;
+    return R * 2 * Math.asin(Math.sqrt(a));
+  }
+
+  function showNearest() {
+    let minDist = Infinity, nearest = null;
+    all.forEach(d => {
+      const dist = haversine(userLat, userLng, d.lat, d.lng);
+      if (dist < minDist) { minDist = dist; nearest = d; }
+    });
+    if (!nearest) return;
+    nearestLoc = nearest;
+
+    const distText = minDist < 10
+      ? `${minDist.toFixed(1)} mi away`
+      : `${Math.round(minDist)} mi away`;
+
+    const dirUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${nearest.lat},${nearest.lng}&travelmode=driving`;
+
+    /* — Header banner — */
+    document.getElementById('banner-name').textContent = `${nearest.name}, ${nearest.city}`;
+    document.getElementById('banner-dist').textContent = distText;
+    const bannerDir = document.getElementById('banner-dir');
+    bannerDir.href = dirUrl;
+    bannerDir.onclick = e => e.stopPropagation();
+    document.getElementById('location-banner').classList.add('visible');
+
+    /* — Sidebar card — */
+    const card = document.getElementById('nearest-card');
+    card.innerHTML =
+      `<div class="nearest-name">${nearest.name}</div>` +
+      `<div class="nearest-addr">${nearest.address}, ${nearest.city}</div>` +
+      `<div class="nearest-meta">` +
+        `<span class="nearest-dist">${distText}</span>` +
+        `<a class="nearest-dir" href="${dirUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Get Directions ›</a>` +
+      `</div>`;
+    card.onclick = goToNearest;
+    document.getElementById('nearest-wrap').classList.add('visible');
+  }
+
+  function goToNearest() {
+    if (!nearestLoc) return;
+    setActive(nearestLoc.id);
+    map.flyTo([nearestLoc.lat, nearestLoc.lng], 15, { duration: 0.6 });
+    nearestLoc.marker.openPopup();
+    scrollToItem(nearestLoc.sidebarEl);
+  }
+
+  document.getElementById('location-banner').addEventListener('click', goToNearest);
+
+  function doLocate() {
+    if (!navigator.geolocation) return;
+
+    const btn = document.getElementById('locate-btn');
+    btn.textContent = '… Locating';
+    btn.classList.add('locating');
+    btn.disabled = true;
+
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        userLat = pos.coords.latitude;
+        userLng = pos.coords.longitude;
+
+        if (userMarker) map.removeLayer(userMarker);
+        const icon = L.divIcon({
+          className: '',
+          html: '<div class="user-dot"></div>',
+          iconSize: [14, 14],
+          iconAnchor: [7, 7],
+        });
+        userMarker = L.marker([userLat, userLng], { icon, zIndexOffset: 1000 }).addTo(map);
+        userMarker.bindPopup(
+          `<div class="popup"><div class="popup-head"><div class="popup-group">Your Location</div>` +
+          `<div class="popup-name" style="font-size:12px">You are here</div></div></div>`
+        );
+
+        showNearest();
+        map.flyTo([userLat, userLng], 13, { duration: 0.9 });
+
+        btn.textContent = '⊙ Located';
+        btn.classList.remove('locating');
+        btn.classList.add('located');
+        btn.disabled = false;
+      },
+      () => {
+        btn.textContent = '⊙ My Location';
+        btn.classList.remove('locating');
+        btn.disabled = false;
+      },
+      { timeout: 10000 }
+    );
+  }
+
+  document.getElementById('locate-btn').addEventListener('click', doLocate);
+
+  /* Auto-prompt for location on page load */
+  doLocate();
+
+})();
+</script>
+</body>
+</html>
