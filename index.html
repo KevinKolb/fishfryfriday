@@ -212,7 +212,19 @@
       margin-bottom: 5px;
       letter-spacing: 0.02em;
     }
-    .loc-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+    .loc-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+    .loc-dir {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid #333;
+      transition: color 0.12s, border-color 0.12s;
+    }
+    .loc-dir:hover { color: var(--white); border-color: var(--white); }
     .tag {
       font-size: 8.5px;
       font-weight: 700;
@@ -516,20 +528,6 @@
       color: var(--muted);
       flex-shrink: 0;
     }
-    .banner-dir {
-      margin-left: auto;
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--red);
-      text-decoration: none;
-      flex-shrink: 0;
-      padding: 4px 8px;
-      border: 1px solid #2a2a2a;
-      transition: border-color 0.12s, color 0.12s;
-    }
-    .banner-dir:hover { border-color: var(--red); color: var(--white); }
 
     /* ─── MOBILE ─────────────────────────────────────── */
     @media (max-width: 768px) {
@@ -1293,7 +1291,6 @@
   <span class="banner-sep">—</span>
   <strong id="banner-name" class="banner-name"></strong>
   <span id="banner-dist" class="banner-dist"></span>
-  <a id="banner-dir" class="banner-dir" href="#" target="_blank" rel="noopener">Get Directions ›</a>
 </div>
 
 <div class="layout">
@@ -1422,7 +1419,8 @@
         `<div class="loc-tags">` +
           (d.dates ? `<span class="tag dates">${d.dates}</span>` : '') +
           (d.price ? `<span class="tag price">${d.price}</span>` : '') +
-        `</div>`;
+        `</div>` +
+        `<a class="loc-dir" href="https://www.google.com/maps/dir/?api=1&destination=${d.lat},${d.lng}&travelmode=driving" target="_blank" rel="noopener" onclick="event.stopPropagation()">Get Directions ›</a>`;
       block.appendChild(item);
       d.sidebarEl = item;
 
@@ -1603,9 +1601,6 @@
     /* — Header banner — */
     document.getElementById('banner-name').textContent = `${nearest.name}, ${nearest.city}`;
     document.getElementById('banner-dist').textContent = distText;
-    const bannerDir = document.getElementById('banner-dir');
-    bannerDir.href = dirUrl;
-    bannerDir.onclick = e => e.stopPropagation();
     document.getElementById('location-banner').classList.add('visible');
 
     /* — Sidebar card — */
