@@ -7,7 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <meta property="og:title"       content="Fish Fry Friday — Southeast Louisiana" />
   <meta property="og:description" content="Find Lent 2026 fish fries across Southeast Louisiana. 63 locations mapped." />
-  <meta property="og:image"       content="og-image.svg" />
+  <meta property="og:image"       content="fff.jpg" />
   <meta property="og:type"        content="website" />
   <meta name="twitter:card"       content="summary_large_image" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -530,6 +530,79 @@
       transition: border-color 0.12s, color 0.12s;
     }
     .banner-dir:hover { border-color: var(--red); color: var(--white); }
+
+    /* ─── MOBILE ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      html, body { overflow: auto; }
+
+      body { flex-direction: column; }
+
+      .layout {
+        flex-direction: column;
+        flex: 1 1 auto;
+        overflow: visible;
+      }
+
+      #map {
+        order: -1;
+        flex: 0 0 42vh;
+        min-height: 220px;
+        width: 100%;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        overflow: visible;
+        border-right: none;
+        border-top: 2px solid var(--dim);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-scroll {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        max-height: none;
+      }
+
+      .header-meta { display: none; }
+
+      .location-banner {
+        padding: 7px 14px;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .banner-sep { display: none; }
+
+      .banner-name {
+        font-size: 12px;
+        flex-shrink: 1;
+        min-width: 0;
+        max-width: 55vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .banner-dist { display: none; }
+
+      .sidebar-top { padding: 10px 14px 8px; }
+
+      .filter-tab { padding: 9px 6px; font-size: 8px; }
+
+      .loc-item { padding: 12px 14px 10px; }
+
+      .sidebar-footer { padding: 12px 14px; }
+    }
+
+    @media (max-width: 480px) {
+      .brand h1 { font-size: 14px; letter-spacing: 0.08em; }
+      .locate-btn { font-size: 8px; padding: 4px 8px; }
+      #map { flex: 0 0 36vh; }
+    }
   </style>
 </head>
 <body>
@@ -1257,8 +1330,10 @@
         to add or correct a listing.
       </div>
       <div class="attrib">
-        Source: <a href="https://www.wwltv.com/article/news/local/looking-for-a-fish-fry-this-lent-here-are-dozens-across-southeast-louisiana/289-bea7da43-3506-46d8-92aa-126953f0f422" target="_blank" rel="noopener">WWL-TV</a>
-        &amp; <a href="https://www.nolanow.com/2026/02/19/2026-fish-fry-guide-heres-where-you-can-find-lenten-fish-fry-fridays/" target="_blank" rel="noopener">NOLA Now</a>.
+        Sources: <a href="https://www.wwltv.com/article/news/local/looking-for-a-fish-fry-this-lent-here-are-dozens-across-southeast-louisiana/289-bea7da43-3506-46d8-92aa-126953f0f422" target="_blank" rel="noopener">WWL-TV</a>,
+        <a href="https://www.nolanow.com/2026/02/19/2026-fish-fry-guide-heres-where-you-can-find-lenten-fish-fry-fridays/" target="_blank" rel="noopener">NOLA Now</a>,
+        <a href="https://nolacatholic.org/friday-fish-fry-calendar" target="_blank" rel="noopener">Archdiocese of NO</a>,
+        <a href="https://wgno.com/news/local/2026-lent-fish-fries-in-greater-new-orleans" target="_blank" rel="noopener">WGNO</a>.
         Dates, times &amp; prices subject to change — confirm with each venue.
       </div>
     </div>
@@ -1292,7 +1367,7 @@
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors ' +
         '&copy; <a href="https://carto.com/attributions">CARTO</a> · ' +
-        'Data: <a href="https://www.wwltv.com/article/news/local/looking-for-a-fish-fry-this-lent-here-are-dozens-across-southeast-louisiana/289-bea7da43-3506-46d8-92aa-126953f0f422">WWL-TV</a>',
+        'Data: <a href="https://www.wwltv.com/article/news/local/looking-for-a-fish-fry-this-lent-here-are-dozens-across-southeast-louisiana/289-bea7da43-3506-46d8-92aa-126953f0f422">WWL-TV</a> · <a href="https://nolacatholic.org/friday-fish-fry-calendar">Archdiocese of NO</a> · <a href="https://wgno.com/news/local/2026-lent-fish-fries-in-greater-new-orleans">WGNO</a>',
       maxZoom: 19,
       subdomains: 'abcd',
     }
