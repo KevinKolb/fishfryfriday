@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0c0c0c"/>
+
+  <!-- Gold accent bar bottom -->
+  <rect x="0" y="614" width="1200" height="4" fill="#CFB53B"/>
+  <!-- Gold accent bar top -->
+  <rect x="0" y="0" width="1200" height="4" fill="#CFB53B"/>
+
+  <!-- Large Ichthys watermark (right side, faint) -->
+  <g opacity="0.06">
+    <path d="M620,315 C680,115 1000,115 1080,315 C1000,515 680,515 620,315Z"
+          fill="#CFB53B"/>
+    <path d="M1080,315 L1170,215 L1170,415Z" fill="#CFB53B"/>
+  </g>
+
+  <!-- Ichthys icon (left side) -->
+  <g transform="translate(96,260)">
+    <path d="M4,55 C10,15 82,15 100,55 C82,95 10,95 4,55Z"
+          fill="none" stroke="#CFB53B" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M100,55 L124,35" stroke="#CFB53B" stroke-width="7" stroke-linecap="round"/>
+    <path d="M100,55 L124,75" stroke="#CFB53B" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <!-- Title -->
+  <text x="248" y="310"
+        font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-weight="800" font-size="80" fill="#f4f2ee"
+        letter-spacing="6">FISH FRY FRIDAY</text>
+
+  <!-- Gold rule -->
+  <rect x="248" y="338" width="720" height="3" fill="#CFB53B" opacity="0.6"/>
+
+  <!-- Subtitle -->
+  <text x="248" y="390"
+        font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-weight="400" font-size="26" fill="#777777"
+        letter-spacing="5">SOUTHEAST LOUISIANA · LENT 2026</text>
+
+  <!-- Count -->
+  <text x="248" y="460"
+        font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-weight="700" font-size="20" fill="#CFB53B"
+        letter-spacing="4">63 FISH FRY LOCATIONS MAPPED</text>
+</svg>
