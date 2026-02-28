@@ -531,14 +531,12 @@
 
     /* ─── MOBILE ─────────────────────────────────────── */
     @media (max-width: 768px) {
-      html, body { overflow: auto; }
-
       body { flex-direction: column; }
 
       .layout {
         flex-direction: column;
-        flex: 1 1 auto;
-        overflow: visible;
+        flex: 1;
+        overflow: hidden;
       }
 
       #map {
@@ -551,8 +549,8 @@
       .sidebar {
         width: 100%;
         max-width: 100%;
-        height: auto;
-        overflow: visible;
+        flex: 1 1 auto;
+        overflow: hidden;
         border-right: none;
         border-top: 2px solid var(--dim);
         display: flex;
@@ -617,7 +615,7 @@
       <name>Archbishop Rummel HS Fishing Club</name>
       <address>1901 Severn Ave.</address>
       <city>Metairie</city>
-      <lat>30.0052</lat><lng>-90.1568</lng>
+      <lat>29.9900</lat><lng>-90.1593</lng>
       <dates>Fridays Feb. 27 – Mar. 17</dates>
       <time>6 p.m. until sold out</time>
       <price>TBA</price>
@@ -627,7 +625,7 @@
       <name>Divine Mercy Parish</name>
       <address>4337 Sal Lentini Pkwy.</address>
       <city>Kenner</city>
-      <lat>30.0211</lat><lng>-90.2434</lng>
+      <lat>30.0422</lat><lng>-90.2690</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>3–7 p.m.</time>
       <price>$15</price>
@@ -637,7 +635,7 @@
       <name>Mary, Help of Christians Parish</name>
       <address>600 1st Ave.</address>
       <city>Harvey</city>
-      <lat>29.9013</lat><lng>-90.0743</lng>
+      <lat>29.9035</lat><lng>-90.0844</lng>
       <dates>Feb. 20 – Mar. 27 (all Fridays)</dates>
       <time>4–8 p.m.</time>
       <price>Fish $12, Shrimp $14, Combo $13</price>
@@ -647,7 +645,7 @@
       <name>Our Lady of Divine Providence</name>
       <address>8617 W. Metairie Ave.</address>
       <city>Metairie</city>
-      <lat>30.0039</lat><lng>-90.2165</lng>
+      <lat>29.9878</lat><lng>-90.2266</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>4–7 p.m.</time>
       <price>Fish $10, Crawfish pie $12, Shrimp étouffée $8</price>
@@ -657,7 +655,7 @@
       <name>Our Lady of Perpetual Help</name>
       <address>1908 Short St.</address>
       <city>Kenner</city>
-      <lat>30.0219</lat><lng>-90.2315</lng>
+      <lat>29.9755</lat><lng>-90.2469</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>3–6 p.m.</time>
       <price>$13</price>
@@ -667,7 +665,7 @@
       <name>St. Agnes Men's Club</name>
       <address>3400 Jefferson Hwy.</address>
       <city>Metairie</city>
-      <lat>29.9674</lat><lng>-90.1477</lng>
+      <lat>29.9629</lat><lng>-90.1597</lng>
       <dates>Feb. 27; Mar. 13, 27</dates>
       <time></time>
       <price>$15</price>
@@ -677,7 +675,7 @@
       <name>St. Angela Merici</name>
       <address>901 Beverly Garden Dr.</address>
       <city>Metairie</city>
-      <lat>30.0026</lat><lng>-90.1534</lng>
+      <lat>30.0049</lat><lng>-90.1458</lng>
       <dates>Feb. 27; Mar. 13, 27</dates>
       <time></time>
       <price>Fish $10–12, Grilled $14, Shrimp $14</price>
@@ -687,7 +685,7 @@
       <name>St. Ann Church &amp; Shrine</name>
       <address>4940 Meadowdale St.</address>
       <city>Metairie</city>
-      <lat>30.0050</lat><lng>-90.1834</lng>
+      <lat>30.0087</lat><lng>-90.1956</lng>
       <dates>Feb. 20; Mar. 6, 20</dates>
       <time>5:30 p.m.</time>
       <price>$12</price>
@@ -697,7 +695,7 @@
       <name>St. Ann Men's Club</name>
       <address>4940 Meadowdale St.</address>
       <city>Metairie</city>
-      <lat>30.0051</lat><lng>-90.1835</lng>
+      <lat>30.0087</lat><lng>-90.1956</lng>
       <dates>Feb. 27; Mar. 13, 27</dates>
       <time></time>
       <price>Fish/Shrimp $12, Combo $15</price>
@@ -707,7 +705,7 @@
       <name>St. Benilde Church</name>
       <address>1901 Division St.</address>
       <city>Metairie</city>
-      <lat>29.9988</lat><lng>-90.1673</lng>
+      <lat>29.9894</lat><lng>-90.1639</lng>
       <dates>Feb. 20; Mar. 6, 20</dates>
       <time></time>
       <price>Fish $14, Shrimp $14, Combo $14, Thai shrimp taco $15</price>
@@ -717,7 +715,7 @@
       <name>St. Catherine of Siena – Knights of Columbus</name>
       <address>105 Bonnabel Blvd.</address>
       <city>Metairie</city>
-      <lat>30.0089</lat><lng>-90.1442</lng>
+      <lat>29.9866</lat><lng>-90.1429</lng>
       <dates>Mar. 13, 20</dates>
       <time>5:30–7 p.m.</time>
       <price>$18+</price>
@@ -727,7 +725,7 @@
       <name>St. Catherine of Siena – Men's Club</name>
       <address>105 Bonnabel Blvd.</address>
       <city>Metairie</city>
-      <lat>30.0090</lat><lng>-90.1443</lng>
+      <lat>29.9866</lat><lng>-90.1429</lng>
       <dates>Feb. 27; Mar. 6</dates>
       <time>5:30–7 p.m.</time>
       <price>$18</price>
@@ -737,7 +735,7 @@
       <name>St. Clement of Rome</name>
       <address>4317 Richland Ave.</address>
       <city>Metairie</city>
-      <lat>30.0123</lat><lng>-90.1787</lng>
+      <lat>30.0148</lat><lng>-90.1752</lng>
       <dates>Feb. 27; Mar. 6</dates>
       <time>5:30 p.m.</time>
       <price>Catfish $14, Combo $15, Shrimp $16, Crawfish pasta $15</price>
@@ -747,7 +745,7 @@
       <name>St. Cletus Parish</name>
       <address>3600 Claire Ave.</address>
       <city>Gretna</city>
-      <lat>29.9186</lat><lng>-90.0571</lng>
+      <lat>29.8848</lat><lng>-90.0451</lng>
       <dates>Feb. 18, 20, 27; Mar. 6, 13, 20, 27</dates>
       <time></time>
       <price>Varies</price>
@@ -757,7 +755,7 @@
       <name>St. Edward the Confessor</name>
       <address>4921 W. Metairie Ave.</address>
       <city>Metairie</city>
-      <lat>29.9947</lat><lng>-90.1909</lng>
+      <lat>29.9840</lat><lng>-90.1873</lng>
       <dates>Feb. 27; Mar. 13</dates>
       <time>5:30–7 p.m.</time>
       <price>Fish $14, Shrimp $14, Combo $15</price>
@@ -767,7 +765,7 @@
       <name>St. Francis Xavier</name>
       <address>444 Metairie Rd.</address>
       <city>Metairie</city>
-      <lat>29.9758</lat><lng>-90.1335</lng>
+      <lat>29.9840</lat><lng>-90.1291</lng>
       <dates>Feb. 27; Mar. 13</dates>
       <time>6:30–8 p.m.</time>
       <price>Adult $15, Child $10, Gumbo $10</price>
@@ -787,7 +785,7 @@
       <name>St. Joseph Church and Shrine</name>
       <address>610 6th St.</address>
       <city>Gretna</city>
-      <lat>29.9194</lat><lng>-90.0543</lng>
+      <lat>29.9148</lat><lng>-90.0616</lng>
       <dates>Feb. 27</dates>
       <time>5–7 p.m.</time>
       <price>$15</price>
@@ -797,7 +795,7 @@
       <name>St. Louis King of France</name>
       <address>1609 Carrollton Ave.</address>
       <city>Metairie</city>
-      <lat>29.9820</lat><lng>-90.1432</lng>
+      <lat>30.0169</lat><lng>-90.1242</lng>
       <dates>Feb. 27; Mar. 6</dates>
       <time>4:30–7:30 p.m.</time>
       <price>$15</price>
@@ -807,7 +805,7 @@
       <name>St. Mary Magdalen Church</name>
       <address>6425 W. Metairie Ave.</address>
       <city>Metairie</city>
-      <lat>30.0020</lat><lng>-90.2070</lng>
+      <lat>29.9850</lat><lng>-90.2058</lng>
       <dates>Mar. 6, 27</dates>
       <time></time>
       <price>Varies</price>
@@ -817,7 +815,7 @@
       <name>St. Matthew the Apostle Parish</name>
       <address>10021 Jefferson Hwy.</address>
       <city>River Ridge</city>
-      <lat>29.9716</lat><lng>-90.2303</lng>
+      <lat>29.9630</lat><lng>-90.2204</lng>
       <dates>Feb. 20, 27; Mar. 6</dates>
       <time>5–8 p.m.</time>
       <price>$15</price>
@@ -827,7 +825,7 @@
       <name>St. Philip Neri</name>
       <address>6500 Kawanee Ave.</address>
       <city>Metairie</city>
-      <lat>29.9993</lat><lng>-90.1988</lng>
+      <lat>30.0116</lat><lng>-90.2160</lng>
       <dates>Feb. 27; Mar. 13</dates>
       <time>Drive-thru 5–7:30 p.m., Dine-in 5–8 p.m.</time>
       <price>Adult $15, Child $7</price>
@@ -837,7 +835,7 @@
       <name>Visitation of Our Lady</name>
       <address>3500 Ames Blvd.</address>
       <city>Marrero</city>
-      <lat>29.8924</lat><lng>-90.1087</lng>
+      <lat>29.8549</lat><lng>-90.1101</lng>
       <dates>Feb. 18; all Fridays of Lent</dates>
       <time></time>
       <price>Po-boys $11–13, Plates $12–17</price>
@@ -850,7 +848,7 @@
       <name>All Saints</name>
       <address>300 Ptolemy St.</address>
       <city>New Orleans</city>
-      <lat>29.9420</lat><lng>-90.0310</lng>
+      <lat>29.9402</lat><lng>-90.0529</lng>
       <dates>Feb. 18; Fridays from Feb. 20</dates>
       <time>10 a.m.</time>
       <price>Varies</price>
@@ -860,7 +858,7 @@
       <name>Blessed Francis Seelos</name>
       <address>3037 Dauphine St.</address>
       <city>New Orleans</city>
-      <lat>29.9555</lat><lng>-90.0533</lng>
+      <lat>29.9648</lat><lng>-90.0457</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>5–7 p.m.</time>
       <price>$15</price>
@@ -870,7 +868,7 @@
       <name>Blessed Trinity Catholic Church</name>
       <address>3900 General Taylor St.</address>
       <city>New Orleans</city>
-      <lat>29.9399</lat><lng>-90.1043</lng>
+      <lat>29.9488</lat><lng>-90.1025</lng>
       <dates>Feb. 20, 27; Mar. 13, 27</dates>
       <time></time>
       <price>$13</price>
@@ -880,7 +878,7 @@
       <name>Center of Jesus the Lord</name>
       <address>1325 Louisiana Ave.</address>
       <city>New Orleans</city>
-      <lat>29.9402</lat><lng>-90.0970</lng>
+      <lat>29.9251</lat><lng>-90.0900</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>5–7:30 p.m.</time>
       <price>$15</price>
@@ -890,7 +888,7 @@
       <name>Holy Cross High School</name>
       <address>5500 Paris Ave.</address>
       <city>New Orleans</city>
-      <lat>30.0044</lat><lng>-89.9999</lng>
+      <lat>30.0140</lat><lng>-90.0760</lng>
       <dates>Feb. 27</dates>
       <time>3:30–5:30 p.m.</time>
       <price>$15</price>
@@ -900,7 +898,7 @@
       <name>Mater Dolorosa</name>
       <address>1230 S. Carrollton Ave.</address>
       <city>New Orleans</city>
-      <lat>29.9440</lat><lng>-90.1192</lng>
+      <lat>29.9474</lat><lng>-90.1293</lng>
       <dates>Feb. 27; Mar. 13, 27</dates>
       <time>5–8 p.m.</time>
       <price>$15</price>
@@ -910,7 +908,7 @@
       <name>Our Lady of the Holy Rosary</name>
       <address>3368 Esplanade Ave.</address>
       <city>New Orleans</city>
-      <lat>29.9810</lat><lng>-90.0752</lng>
+      <lat>29.9814</lat><lng>-90.0868</lng>
       <dates>Feb. 27; Mar. 6, 13</dates>
       <time>5:30–7:30 p.m.</time>
       <price>$12</price>
@@ -920,7 +918,7 @@
       <name>St. Francis of Assisi</name>
       <address>631 State St.</address>
       <city>New Orleans</city>
-      <lat>29.9341</lat><lng>-90.1139</lng>
+      <lat>29.9208</lat><lng>-90.1216</lng>
       <dates>Feb. 27; Mar. 13, 27</dates>
       <time>6–8 p.m.</time>
       <price>Adult $15, Child $11</price>
@@ -930,7 +928,7 @@
       <name>St. Joseph Rebuild Center / Lantern Light</name>
       <address>1803 Gravier St.</address>
       <city>New Orleans</city>
-      <lat>29.9480</lat><lng>-90.0820</lng>
+      <lat>29.9562</lat><lng>-90.0815</lng>
       <dates>Feb. 20</dates>
       <time>Noon–6 p.m.</time>
       <price>Varies</price>
@@ -940,7 +938,7 @@
       <name>St. Josephine Bakhita</name>
       <address>3501 N. Miro St.</address>
       <city>New Orleans</city>
-      <lat>29.9894</lat><lng>-90.0690</lng>
+      <lat>29.9781</lat><lng>-90.0355</lng>
       <dates>Every Friday during Lent</dates>
       <time>11 a.m.–6 p.m.</time>
       <price>$15</price>
@@ -950,7 +948,7 @@
       <name>St. Maria Goretti</name>
       <address>7300 Crowder Blvd.</address>
       <city>New Orleans</city>
-      <lat>30.0280</lat><lng>-89.9580</lng>
+      <lat>30.0362</lat><lng>-89.9979</lng>
       <dates>Feb. 20; Mar. 6, 20, 27</dates>
       <time>Noon–5 p.m.</time>
       <price>$15</price>
@@ -960,7 +958,7 @@
       <name>St. Martin de Porres</name>
       <address>2212 Prentiss Ave.</address>
       <city>New Orleans</city>
-      <lat>30.0010</lat><lng>-90.0585</lng>
+      <lat>30.0164</lat><lng>-90.0599</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>10:30 a.m.–5:30 p.m.</time>
       <price>$15</price>
@@ -970,7 +968,7 @@
       <name>St. Paul the Apostle</name>
       <address>6828 Chef Menteur Hwy.</address>
       <city>New Orleans</city>
-      <lat>30.0118</lat><lng>-89.9792</lng>
+      <lat>30.0110</lat><lng>-90.0080</lng>
       <dates>Feb. 20; Mar. 27</dates>
       <time>11 a.m.–5 p.m.</time>
       <price>$12</price>
@@ -980,7 +978,7 @@
       <name>St. Peter Claver Parish</name>
       <address>1923 St. Philip St.</address>
       <city>New Orleans</city>
-      <lat>29.9590</lat><lng>-90.0802</lng>
+      <lat>29.9681</lat><lng>-90.0733</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>11 a.m.–4 p.m.</time>
       <price>$15 (drinks $1)</price>
@@ -990,7 +988,7 @@
       <name>Ursuline Academy</name>
       <address>2635 State St.</address>
       <city>New Orleans</city>
-      <lat>29.9326</lat><lng>-90.1165</lng>
+      <lat>29.9413</lat><lng>-90.1134</lng>
       <dates>Mar. 27</dates>
       <time>5–8 p.m.</time>
       <price>Varies</price>
@@ -1003,7 +1001,7 @@
       <name>Annunciation Church</name>
       <address>517 Ave. B</address>
       <city>Bogalusa</city>
-      <lat>30.7909</lat><lng>-89.8432</lng>
+      <lat>30.7767</lat><lng>-89.8664</lng>
       <dates>Feb. 27; Mar. 13, 27</dates>
       <time>3:30–7 p.m.</time>
       <price>Varies</price>
@@ -1013,7 +1011,7 @@
       <name>Holy Family Friends of St. Francis</name>
       <address>1220 14th Ave.</address>
       <city>Franklinton</city>
-      <lat>30.8488</lat><lng>-90.1538</lng>
+      <lat>30.8451</lat><lng>-90.1487</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>4–7 p.m.</time>
       <price>$12</price>
@@ -1023,7 +1021,7 @@
       <name>Mary, Queen of Peace Church</name>
       <address>1501 W. Causeway Approach</address>
       <city>Mandeville</city>
-      <lat>30.3730</lat><lng>-90.0977</lng>
+      <lat>30.3912</lat><lng>-90.0990</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>5–6:30 p.m.</time>
       <price>Adult $12, Child $6, Coop Special $20</price>
@@ -1043,7 +1041,7 @@
       <name>Our Lady of Lourdes</name>
       <address>345 Westchester Pl.</address>
       <city>Slidell</city>
-      <lat>30.2983</lat><lng>-89.7808</lng>
+      <lat>30.2502</lat><lng>-89.7884</lng>
       <dates>Feb. 27; Mar. 6, 13, 20, 27</dates>
       <time>5–8 p.m.</time>
       <price>$12–14</price>
@@ -1053,7 +1051,7 @@
       <name>Our Lady of the Lake Church</name>
       <address>312 Lafitte St.</address>
       <city>Mandeville</city>
-      <lat>30.3560</lat><lng>-90.0794</lng>
+      <lat>30.3567</lat><lng>-90.0687</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time></time>
       <price>Adult $12, Child $7</price>
@@ -1063,7 +1061,7 @@
       <name>Sacred Heart of Jesus</name>
       <address>28088 Main St.</address>
       <city>Lacombe</city>
-      <lat>30.3152</lat><lng>-89.9294</lng>
+      <lat>30.3123</lat><lng>-89.9405</lng>
       <dates>Feb. 20; Mar. 6</dates>
       <time>4–6:30 p.m.</time>
       <price>$12</price>
@@ -1073,7 +1071,7 @@
       <name>St. Anselm Parish</name>
       <address>Madisonville</address>
       <city>Madisonville</city>
-      <lat>30.4020</lat><lng>-90.1636</lng>
+      <lat>30.4066</lat><lng>-90.1570</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time></time>
       <price>Adult fish $19, Adult shrimp $20, Seafood combo $23</price>
@@ -1083,7 +1081,7 @@
       <name>St. Benedict Church</name>
       <address>20370 Smith Rd.</address>
       <city>Covington</city>
-      <lat>30.5273</lat><lng>-90.1115</lng>
+      <lat>30.5333</lat><lng>-90.0630</lng>
       <dates>Feb. 27; Mar. 13, 27</dates>
       <time></time>
       <price>$13</price>
@@ -1103,7 +1101,7 @@
       <name>St. Jane de Chantal</name>
       <address>72040 Maple St.</address>
       <city>Abita Springs</city>
-      <lat>30.4696</lat><lng>-90.0330</lng>
+      <lat>30.4780</lat><lng>-90.0376</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time></time>
       <price>Plates $13, Gumbo $7</price>
@@ -1113,7 +1111,7 @@
       <name>St. John the Baptist</name>
       <address>11345 St. John Church Rd.</address>
       <city>Folsom</city>
-      <lat>30.6293</lat><lng>-90.1888</lng>
+      <lat>30.6213</lat><lng>-90.2238</lng>
       <dates>Every Friday in Lent (except Good Friday)</dates>
       <time>4–7 p.m.</time>
       <price>$12</price>
@@ -1123,7 +1121,7 @@
       <name>St. John of the Cross</name>
       <address>61030 Brier Lake Dr.</address>
       <city>Lacombe</city>
-      <lat>30.3189</lat><lng>-89.9254</lng>
+      <lat>30.3171</lat><lng>-89.8912</lng>
       <dates>Feb. 27; Mar. 13, 27</dates>
       <time>4:30–7 p.m.</time>
       <price>$12</price>
@@ -1133,7 +1131,7 @@
       <name>St. Luke the Evangelist</name>
       <address>910 Cross Gates Blvd.</address>
       <city>Slidell</city>
-      <lat>30.2878</lat><lng>-89.7900</lng>
+      <lat>30.2911</lat><lng>-89.7314</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>5–8 p.m.</time>
       <price>$12</price>
@@ -1143,7 +1141,7 @@
       <name>St. Peter</name>
       <address>125 E. 19th Ave.</address>
       <city>Covington</city>
-      <lat>30.4804</lat><lng>-90.0948</lng>
+      <lat>30.4735</lat><lng>-90.1013</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>Dine-in 5:30–7 p.m., Drive-thru 5–7 p.m.</time>
       <price>$13</price>
@@ -1156,7 +1154,7 @@
       <name>Our Lady of Perpetual Help</name>
       <address>8968 LA-23</address>
       <city>Belle Chasse</city>
-      <lat>29.8527</lat><lng>-90.0019</lng>
+      <lat>29.8419</lat><lng>-89.9991</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>5:30–8 p.m.</time>
       <price>$15</price>
@@ -1166,7 +1164,7 @@
       <name>St. Patrick Church</name>
       <address>28698 Hwy. 23</address>
       <city>Port Sulphur</city>
-      <lat>29.4878</lat><lng>-89.6950</lng>
+      <lat>29.4645</lat><lng>-89.6776</lng>
       <dates>Fridays during Lent</dates>
       <time>11 a.m.–1 p.m.</time>
       <price>Varies</price>
@@ -1179,7 +1177,7 @@
       <name>Ascension of Our Lord</name>
       <address>809 Greenwood Dr.</address>
       <city>LaPlace</city>
-      <lat>30.0720</lat><lng>-90.4746</lng>
+      <lat>30.0805</lat><lng>-90.4837</lng>
       <dates>Feb. 18, 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>10:30 a.m.–6 p.m.</time>
       <price>Adult $13, Child $10</price>
@@ -1189,7 +1187,7 @@
       <name>Our Lady of Grace Church</name>
       <address>772 LA-44</address>
       <city>Reserve</city>
-      <lat>30.0568</lat><lng>-90.5566</lng>
+      <lat>30.0505</lat><lng>-90.5311</lng>
       <dates>Every Friday in Lent (except Good Friday)</dates>
       <time>11 a.m.–1 p.m. and 5:30–7 p.m.</time>
       <price>$15</price>
@@ -1199,7 +1197,7 @@
       <name>St. Anthony of Padua</name>
       <address>234 Angus Dr.</address>
       <city>Luling</city>
-      <lat>29.9291</lat><lng>-90.3699</lng>
+      <lat>29.9209</lat><lng>-90.3686</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>5–7 p.m.</time>
       <price>$15</price>
@@ -1209,7 +1207,7 @@
       <name>St. Charles Borromeo Church</name>
       <address>13396 River Rd.</address>
       <city>Destrehan</city>
-      <lat>29.9555</lat><lng>-90.3850</lng>
+      <lat>29.9505</lat><lng>-90.3752</lng>
       <dates>Feb. 27; Mar. 13, 27</dates>
       <time>4–7 p.m.</time>
       <price>Advance $15, Door $20</price>
@@ -1219,7 +1217,7 @@
       <name>St. Joan of Arc</name>
       <address>529 W. 5th St.</address>
       <city>LaPlace</city>
-      <lat>30.0688</lat><lng>-90.4778</lng>
+      <lat>30.0689</lat><lng>-90.4987</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time></time>
       <price>Fish $14, Shrimp $16, Combo $16, Crawfish étouffée $17</price>
@@ -1229,7 +1227,7 @@
       <name>St. Mark Church</name>
       <address>10773 River Rd.</address>
       <city>Ama</city>
-      <lat>29.9470</lat><lng>-90.3165</lng>
+      <lat>29.9495</lat><lng>-90.2987</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>4:30 p.m.</time>
       <price>Varies</price>
@@ -1239,7 +1237,7 @@
       <name>Sacred Heart Church</name>
       <address>375 Spruce St.</address>
       <city>Norco</city>
-      <lat>29.9960</lat><lng>-90.3994</lng>
+      <lat>30.0071</lat><lng>-90.4174</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time>4–7 p.m.</time>
       <price>$15</price>
@@ -1252,7 +1250,7 @@
       <name>St. Bernard Church</name>
       <address>2805 Bayou Rd.</address>
       <city>St. Bernard</city>
-      <lat>29.8871</lat><lng>-89.8997</lng>
+      <lat>29.8675</lat><lng>-89.8181</lng>
       <dates>Feb. 20, 27; Mar. 6, 13, 20, 27</dates>
       <time></time>
       <price>Fish/Shrimp $20, Stuffed crab $26, Seafood platter $28</price>
